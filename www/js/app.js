@@ -49,7 +49,7 @@ pithy.controller("LoginController",function($scope,$firebaseAuth,$location){
           password : password
         }, function(error, authData) {
           if (error) {
-            alert("Login Failed!", error);
+            alert(error);
           } 
           else {
               $scope.$apply(function(){
@@ -69,7 +69,7 @@ pithy.controller("LoginController",function($scope,$firebaseAuth,$location){
           password : password
         }, function(error, userData) {
           if (error) {
-            console.log("Error creating user:", error);
+            alert(error);
           } else {
              $scope.$apply(function(){
               $location.path('/quotes');
@@ -91,7 +91,7 @@ pithy.controller("QuotesController",function($scope,$firebaseObject,$ionicPopup,
           }
       };
 
-      $scope.$on('$ionicView.enter', function (viewInfo, state) {
+      $scope.$on('$ionicView.beforeEnter', function (viewInfo, state) {
         initQuotes();
       });
 
