@@ -52,8 +52,6 @@ pithy.controller("LoginController",function($scope,$firebaseAuth,$location){
             alert("Login Failed!", error);
           } 
           else {
-            //alert("Authenticated successfully with payload:", authData);
-              console.log(authData.uid);
               $scope.$apply(function(){
               $location.path('/quotes');
             });
@@ -62,8 +60,10 @@ pithy.controller("LoginController",function($scope,$firebaseAuth,$location){
         
     };
 
+
+
     $scope.register = function(username,password){
-        
+
         fb.createUser({
           email    : username,
           password : password
@@ -71,8 +71,6 @@ pithy.controller("LoginController",function($scope,$firebaseAuth,$location){
           if (error) {
             console.log("Error creating user:", error);
           } else {
-            console.log(userData.uid);
-            //alert("Successfully created user account with uid:", userData.uid);
              $scope.$apply(function(){
               $location.path('/quotes');
             });
@@ -82,24 +80,27 @@ pithy.controller("LoginController",function($scope,$firebaseAuth,$location){
 
   });
 
-pithy.controller("QuotesController",function($scope,$firebaseObject,$ionicPopup){
+pithy.controller("QuotesController",function($scope,$firebaseObject,$ionicPopup, $location){
 
-      $scope.list = function(){
+      var initQuotes = function(){
           var fbAuth = fb.getAuth();
           if (fbAuth){
+              console.log("fb auth: ", fbAuth);
               var object = $firebaseObject(fb.child("users/" + fbAuth.uid));
-              console.log(object);
               object.$bindTo($scope,"data");
           }
-
       };
+
+      $scope.$on('$ionicView.enter', function (viewInfo, state) {
+        initQuotes();
+      });
 
       $scope.create = function(){
         $ionicPopup.prompt({
           title: "Enter a new quote",
           inputType: "text"
         }).then(function(result) {
-          if(result !== "") {
+          if(result && result != "") {
             if($scope.data.hasOwnProperty("quotes") !== true) {
               $scope.data.quotes = [];
             }
@@ -110,6 +111,27 @@ pithy.controller("QuotesController",function($scope,$firebaseObject,$ionicPopup)
         });
       };
 
+      $scope.remove = function(quote){
+          var quotesArray = $scope.data.quotes;
+          var index = quotesArray.indexOf(quote);
+          
+          if (quotesArray[index]){
+            delete quotesArray[index];
+            console.log($scope.data.quotes);
+
+          }
+          else {
+            console.log("remove action failed");
+          }
+      };
+
+      $scope.logout = function(){
+        fb.unauth();
+        $location.path("/login")
+      };
+
+
+      
 
 });
 
