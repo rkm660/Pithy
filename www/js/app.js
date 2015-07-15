@@ -3,7 +3,7 @@
 // angular.module is a global place for creating, registering and retrieving Angular modules
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
-var pithy = angular.module('starter', ['ionic','firebase']);
+var pithy = angular.module('pithyApp', ['ionic','firebase']);
 var fb = null;
 
 pithy.run(function($ionicPlatform) {
@@ -60,8 +60,6 @@ pithy.controller("LoginController",function($scope,$firebaseAuth,$location){
         
     };
 
-
-
     $scope.register = function(username,password){
 
         fb.createUser({
@@ -80,7 +78,7 @@ pithy.controller("LoginController",function($scope,$firebaseAuth,$location){
 
   });
 
-pithy.controller("QuotesController",function($scope,$firebaseObject,$ionicPopup, $location){
+pithy.controller("QuotesController",function($scope,$firebaseObject,$ionicPopup,$location,$ionicModal,$ionicListDelegate){
 
       var initQuotes = function(){
           var fbAuth = fb.getAuth();
@@ -91,25 +89,32 @@ pithy.controller("QuotesController",function($scope,$firebaseObject,$ionicPopup,
           }
       };
 
+      var init = function(){
+          $scope.editedQuote = {text:"",author:""};
+
+      };
+
+      var currentEditIndex = null;
+      
+
       $scope.$on('$ionicView.beforeEnter', function (viewInfo, state) {
         initQuotes();
       });
 
-      $scope.create = function(){
-        $ionicPopup.prompt({
-          title: "Enter a new quote",
-          inputType: "text"
-        }).then(function(result) {
-          if(result && result != "") {
+      $scope.createQuote = function(quote){
+          if(quote && quote.quote != "") {
             if($scope.data.hasOwnProperty("quotes") !== true) {
               $scope.data.quotes = [];
             }
-            $scope.data.quotes.push({title: result});
+            $scope.data.quotes.push({text: quote.text,author:quote.author});
+            quote.text = "";
+            quote.author = "";
           } else {
             console.log("Action not completed");
           }
-        });
-      };
+          $scope.modal.hide();
+
+     };
 
       $scope.remove = function(quote){
           var quotesArray = $scope.data.quotes;
@@ -117,11 +122,26 @@ pithy.controller("QuotesController",function($scope,$firebaseObject,$ionicPopup,
           
           if (quotesArray[index]){
             delete quotesArray[index];
-            console.log($scope.data.quotes);
 
           }
           else {
             console.log("remove action failed");
+          }
+      };
+
+      $scope.prepareForEdit = function(index){
+          currentEditIndex = index;
+          $scope.editedQuote.text = $scope.data.quotes[index].text;
+          $scope.editedQuote.author = $scope.data.quotes[index].author;
+          $scope.editModal.show();
+      };
+
+      $scope.editQuote = function(quote){
+          if (currentEditIndex != null){
+            $scope.data.quotes[currentEditIndex].text = quote.text;
+            $scope.data.quotes[currentEditIndex].author = quote.author;
+            $scope.editModal.hide();
+            $ionicListDelegate.closeOptionButtons();
           }
       };
 
@@ -130,8 +150,22 @@ pithy.controller("QuotesController",function($scope,$firebaseObject,$ionicPopup,
         $location.path("/login")
       };
 
+      $ionicModal.fromTemplateUrl('templates/create.html', {
+        scope: $scope
+      }).then(function(modal) {
+        $scope.createModal = modal;
+      });
 
-      
+      $ionicModal.fromTemplateUrl('templates/edit.html', {
+        scope: $scope
+      }).then(function(modal) {
+        $scope.editModal = modal;
+      });
+
+
+
+
+      init();
 
 });
 
