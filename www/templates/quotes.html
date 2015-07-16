@@ -36,10 +36,16 @@
                     <span class="input-label">Author</span>
                     <input ng-model="newQuote.author" type="text">
                 </label>
-                <label class="item item-input">
-                    <span class="input-label">Tags</span>
-                    <input ng-keypress="saveTags($event,quoteTags)" ng-model="quoteTags" type="text">
-                </label>
+                <div class="list">
+                    <div class="item item-input-inset">
+                        <label class="item-input-wrapper">
+                            <input type="text" placeholder="Tags" ng-model="tagInput">
+                        </label>
+                        <button ng-click="addTag(tagInput); tagInput = ''" class="button button-small">
+                            Add
+                        </button>
+                    </div>
+                </div>
                 <ion-list show-delete="false" can-swipe="false">
                     <ion-item collection-repeat="tag in tags">
                         <ion-checkbox ng-checked="true">{{tag}}</ion-checkbox>
@@ -65,8 +71,23 @@
                         <span class="input-label">Author</span>
                         <input ng-model="editedQuote.author" type="text">
                     </label>
-                    <button class="button button-full button-positive" ng-click="editQuote(editedQuote)">Save</button>
+                    <div class="list">
+                        <div class="item item-input-inset">
+                            <label class="item-input-wrapper">
+                                <input type="text" placeholder="Tags" ng-model="tagInput">
+                            </label>
+                            <button ng-click="addTag(tagInput); tagInput = ''" class="button button-small">
+                                Add
+                            </button>
+                        </div>
+                    </div>
+                    <ion-list show-delete="false" can-swipe="false">
+                        <ion-item collection-repeat="tag in tags">
+                            <ion-checkbox ng-checked="true">{{tag}}</ion-checkbox>
+                        </ion-item>
+                    </ion-list>
                 </div>
+                <button class="button button-full button-positive" ng-click="editQuote(editedQuote)">Save</button>
             </ion-content>
         </ion-modal-view>
     </script>

@@ -99,29 +99,13 @@ pithy.controller("QuotesController", function($scope, $firebaseObject, $ionicPop
     };
 
     var init = function() {
+        $scope.tags = [];
         $scope.editedQuote = {
             text: "",
             author: "",
-            tags: []
+            tags: $scope.tags
         };
 
-    };
-
-    $scope.saveTags = function(keyEvent, quoteTags) {
-        console.log(quoteTags);
-        if (keyEvent.which === 44) {
-            if (quoteTags && quoteTags.length > 0) {
-                $scope.tags = quoteTags.split(",");
-                for (var i = 0; i < $scope.tags.length; i++) {
-                    $scope.tags[i] = $scope.tags[i].replace(/\W/g, '').replace(/[0-9]/g, '');
-                }
-                console.log($scope.tags);
-            }
-        }
-    };
-
-    $scope.change = function() {
-        console.log("yeah");
     };
 
     var currentEditIndex = null;
@@ -129,6 +113,9 @@ pithy.controller("QuotesController", function($scope, $firebaseObject, $ionicPop
 
     $scope.$on('$ionicView.beforeEnter', function(viewInfo, state) {
         initQuotes();
+        if (!fb.getAuth()) {
+            $location.path("/login");
+        }
     });
 
     $scope.createQuote = function(quote) {
@@ -143,7 +130,7 @@ pithy.controller("QuotesController", function($scope, $firebaseObject, $ionicPop
             });
             quote.text = "";
             quote.author = "";
-            quote.tags = [];
+            $scope.tags = [];
         } else {
             console.log("action not completed");
         }
@@ -151,22 +138,12 @@ pithy.controller("QuotesController", function($scope, $firebaseObject, $ionicPop
 
     };
 
-    $scope.remove = function(quote) {
-        var quotesArray = $scope.data.quotes;
-        var index = quotesArray.indexOf(quote);
-
-        if (quotesArray[index]) {
-            delete quotesArray[index];
-
-        } else {
-            console.log("remove action failed");
-        }
-    };
-
     $scope.prepareForEdit = function(index) {
         currentEditIndex = index;
+        console.log($scope.data.quotes[index]);
         $scope.editedQuote.text = $scope.data.quotes[index].text;
         $scope.editedQuote.author = $scope.data.quotes[index].author;
+        $scope.tags = $scope.data.quotes[index].tags;
         $scope.editModal.show();
         $ionicListDelegate.closeOptionButtons();
 
@@ -176,9 +153,16 @@ pithy.controller("QuotesController", function($scope, $firebaseObject, $ionicPop
         if (currentEditIndex != null) {
             $scope.data.quotes[currentEditIndex].text = quote.text;
             $scope.data.quotes[currentEditIndex].author = quote.author;
+            $scope.data.quotes[currentEditIndex].tags = $scope.tags;
             $scope.editModal.hide();
         }
     };
+
+
+    $scope.addTag = function(input){
+        $scope.tags.push(input)
+    };
+
 
     $scope.logout = function() {
         fb.unauth();
