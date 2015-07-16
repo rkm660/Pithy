@@ -89,6 +89,7 @@ pithy.controller("LoginController", function($scope, $firebaseAuth, $location) {
 
 pithy.controller("QuotesController", function($scope, $firebaseObject, $ionicPopup, $location, $ionicModal, $ionicListDelegate) {
 
+    //initial refresh
     var initQuotes = function() {
         var fbAuth = fb.getAuth();
         if (fbAuth) {
@@ -98,6 +99,7 @@ pithy.controller("QuotesController", function($scope, $firebaseObject, $ionicPop
         }
     };
 
+    //init scope
     var init = function() {
         $scope.tags = [];
         $scope.editedQuote = {
@@ -108,9 +110,10 @@ pithy.controller("QuotesController", function($scope, $firebaseObject, $ionicPop
 
     };
 
+    //init private vars
     var currentEditIndex = null;
 
-
+    //auth check
     $scope.$on('$ionicView.beforeEnter', function(viewInfo, state) {
         initQuotes();
         if (!fb.getAuth()) {
@@ -158,9 +161,14 @@ pithy.controller("QuotesController", function($scope, $firebaseObject, $ionicPop
         }
     };
 
+    $scope.editSelected = function(checkboxID, index) {
+        $scope.tags.splice(index, 1);
+    };
 
-    $scope.addTag = function(input){
-        $scope.tags.push(input)
+    $scope.addTag = function(input) {
+        if (input.length > 0) {
+            $scope.tags.push(input)
+        }
     };
 
 
