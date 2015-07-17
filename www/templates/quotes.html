@@ -6,7 +6,7 @@
             <button class="right button" ng-click="logout()">Logout</button>
         </ion-nav-buttons>
         <ion-nav-buttons side="right">
-            <button class="right button button-icon icon ion-plus" ng-click="createModal.show()"></button>
+            <button class="right button button-icon icon ion-plus" ng-click="showCreateModal()"></button>
         </ion-nav-buttons>
         <ion-content>
             <ion-list show-delete="false" can-swipe="true">
@@ -39,7 +39,7 @@
                 <div class="list">
                     <div class="item item-input-inset">
                         <label class="item-input-wrapper">
-                            <input type="text" placeholder="Tags" ng-model="tagInput">
+                            <input type="text" placeholder="Tags" ng-model="tagInput" >
                         </label>
                         <button ng-click="addTag(tagInput); tagInput = ''" class="button button-small">
                             Add
@@ -51,7 +51,7 @@
                         <ion-checkbox ng-checked="true" ng-model="this.checked" ng-click="editSelected(this.checked,$index)">{{tag}}</ion-checkbox>
                     </ion-item>
                 </ion-list>
-                <button class="button button-full button-positive" ng-click="createQuote(newQuote); tagInput=''">Create</button>
+                <button class="button button-full button-positive" ng-click="createQuote(newQuote)">Create</button>
             </ion-content>
         </ion-modal-view>
     </script>

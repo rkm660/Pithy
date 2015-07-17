@@ -40,11 +40,6 @@ pithy.config(function($stateProvider, $urlRouterProvider) {
 
 });
 
-
-
-
-
-
 pithy.controller("LoginController", function($scope, $firebaseAuth, $location) {
 
     $scope.$on('$ionicView.beforeEnter', function(viewInfo, state) {
@@ -141,12 +136,18 @@ pithy.controller("QuotesController", function($scope, $firebaseObject, $ionicPop
 
     };
 
+    $scope.showCreateModal = function(){
+        $scope.tags=[];
+        $scope.createModal.show()
+    };
+
     $scope.prepareForEdit = function(index) {
         currentEditIndex = index;
-        console.log($scope.data.quotes[index]);
+
         $scope.editedQuote.text = $scope.data.quotes[index].text;
         $scope.editedQuote.author = $scope.data.quotes[index].author;
         $scope.tags = $scope.data.quotes[index].tags;
+
         $scope.editModal.show();
         $ionicListDelegate.closeOptionButtons();
 
@@ -154,9 +155,11 @@ pithy.controller("QuotesController", function($scope, $firebaseObject, $ionicPop
 
     $scope.editQuote = function(quote) {
         if (currentEditIndex != null) {
+
             $scope.data.quotes[currentEditIndex].text = quote.text;
             $scope.data.quotes[currentEditIndex].author = quote.author;
             $scope.data.quotes[currentEditIndex].tags = $scope.tags;
+
             $scope.editModal.hide();
         }
     };
@@ -167,16 +170,19 @@ pithy.controller("QuotesController", function($scope, $firebaseObject, $ionicPop
 
     $scope.addTag = function(input) {
         if (input.length > 0) {
-            $scope.tags.push(input)
+            $scope.tags.push(input);
+        }
+        else{
+          alert("You can't enter a blank category!");
         }
     };
-
 
     $scope.logout = function() {
         fb.unauth();
         $location.path("/login")
     };
 
+    //create and edit modals
     $ionicModal.fromTemplateUrl('templates/create.html', {
         scope: $scope
     }).then(function(modal) {
