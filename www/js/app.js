@@ -82,7 +82,7 @@ pithy.controller("LoginController", function($scope, $firebaseAuth, $location) {
 
 });
 
-pithy.controller("QuotesController", function($scope, $firebaseObject, $ionicPopup, $location, $ionicModal, $ionicListDelegate) {
+pithy.controller("QuotesController", function($scope, $firebaseObject, $ionicPopup, $location, $ionicModal, $ionicListDelegate, $state) {
 
     //initial refresh
     var initQuotes = function() {
@@ -161,6 +161,10 @@ pithy.controller("QuotesController", function($scope, $firebaseObject, $ionicPop
             $scope.data.quotes[currentEditIndex].tags = $scope.tags;
 
             $scope.editModal.hide();
+            $state.go($state.current, {}, {
+                reload: true
+            });
+
         }
     };
 
