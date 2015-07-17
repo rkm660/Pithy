@@ -12,8 +12,11 @@
             <ion-list show-delete="false" can-swipe="true">
                 <ion-item collection-repeat="quote in data.quotes">
                     <div>
-                        <h1>"{{quote.text}}"</h1>
-                        <h2>-{{quote.author}}</h2>
+                        <h1 class="quoteText">"{{quote.text}}"</h1>
+                        <h2 class="quoteAuthor">-{{quote.author}}</h2>
+                        <button ng-repeat="tag in quote.tags" class="button button-small button-calm tagButton">
+                            {{tag}}
+                        </button>
                     </div>
                     <ion-option-button ng-click="data.quotes.splice($index, 1)" class="button-assertive icon ion-trash-a"></ion-option-button>
                     <ion-option-button ng-click="prepareForEdit($index)" class="button-positive">Edit</ion-option-button>
@@ -39,7 +42,7 @@
                 <div class="list">
                     <div class="item item-input-inset">
                         <label class="item-input-wrapper">
-                            <input type="text" placeholder="Tags" ng-model="tagInput" >
+                            <input type="text" placeholder="Tags" ng-model="tagInput">
                         </label>
                         <button ng-click="addTag(tagInput); tagInput = ''" class="button button-small">
                             Add
@@ -48,7 +51,7 @@
                 </div>
                 <ion-list show-delete="false" can-swipe="false">
                     <ion-item collection-repeat="tag in tags">
-                        <ion-checkbox ng-checked="true" ng-model="this.checked" ng-click="editSelected(this.checked,$index)">{{tag}}</ion-checkbox>
+                        <ion-checkbox ng-checked="true" ng-model="true" ng-click="editSelected($index)">{{tag}}</ion-checkbox>
                     </ion-item>
                 </ion-list>
                 <button class="button button-full button-positive" ng-click="createQuote(newQuote)">Create</button>
@@ -59,7 +62,6 @@
         <ion-modal-view>
             <ion-header-bar class="bar bar-header bar-positive">
                 <h1 class="title">Edit Quote</h1>
-                <button class="button button-clear button-primary" ng-click="editModal.hide()">Cancel</button>
             </ion-header-bar>
             <ion-content class="padding">
                 <div class="list">
@@ -83,7 +85,7 @@
                     </div>
                     <ion-list show-delete="false" can-swipe="false">
                         <ion-item collection-repeat="tag in tags">
-                            <ion-checkbox ng-checked="true" ng-model="this.checked" ng-click="editSelected(this.checked,$index)">{{tag}}</ion-checkbox>
+                            <ion-checkbox ng-checked="true" ng-model="true"  ng-click="editSelected($index)">{{tag}}</ion-checkbox>
                         </ion-item>
                     </ion-list>
                 </div>

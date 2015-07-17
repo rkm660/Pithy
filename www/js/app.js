@@ -136,8 +136,8 @@ pithy.controller("QuotesController", function($scope, $firebaseObject, $ionicPop
 
     };
 
-    $scope.showCreateModal = function(){
-        $scope.tags=[];
+    $scope.showCreateModal = function() {
+        $scope.tags = [];
         $scope.createModal.show()
     };
 
@@ -164,16 +164,22 @@ pithy.controller("QuotesController", function($scope, $firebaseObject, $ionicPop
         }
     };
 
-    $scope.editSelected = function(checkboxID, index) {
-        $scope.tags.splice(index, 1);
+    $scope.editSelected = function(index) {
+        if ($scope.tags.indexOf(index)) {
+            $scope.tags.splice(index, 1);
+        }
     };
 
     $scope.addTag = function(input) {
         if (input.length > 0) {
-            $scope.tags.push(input);
-        }
-        else{
-          alert("You can't enter a blank category!");
+            if ($scope.tags == undefined) {
+                $scope.tags = [];
+            }
+            if ($scope.tags.indexOf(input) == -1) {
+                $scope.tags.push(input);
+            }
+        } else {
+            alert("You can't enter a blank category!");
         }
     };
 
