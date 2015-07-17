@@ -160,7 +160,7 @@ pithy.controller("QuotesController", function($scope, $firebaseObject, $ionicPop
             $scope.data.quotes[currentEditIndex].author = quote.author;
             $scope.data.quotes[currentEditIndex].tags = $scope.tags;
             $scope.$apply();
-            
+
             $scope.editModal.hide();
 
             $state.go($state.current, {}, {
@@ -181,9 +181,8 @@ pithy.controller("QuotesController", function($scope, $firebaseObject, $ionicPop
                 $scope.tags = [];
             }
             if ($scope.tags.indexOf(input) == -1) {
-                $scope.tags.push(input);
+                $scope.tags.push(input.toLowerCase());
             }
-            console.log("hahaahah" , $scope.tags);
         } else {
             alert("You can't enter a blank category!");
         }
