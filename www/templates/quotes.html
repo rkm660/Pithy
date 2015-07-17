@@ -10,6 +10,12 @@
         </ion-nav-buttons>
         <ion-content>
             <ion-list show-delete="false" can-swipe="true">
+                <button class="button button-block button-dark" ng-click="identifyUser()">
+                    Identify a user
+                </button>
+                <button class="button button-block button-positive" ng-if="identified" ng-click="pushRegister()">
+                    Register for Push
+                </button>
                 <ion-item collection-repeat="quote in data.quotes" class="item-text-wrap">
                     <h1 class="quoteText">"{{quote.text}}"</h1>
                     <h2 class="quoteAuthor">-{{quote.author}}</h2>
