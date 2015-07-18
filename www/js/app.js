@@ -98,9 +98,7 @@ pithy.controller("LoginController", function($scope, $firebaseAuth, $location) {
 pithy.controller("QuotesController", function($scope, $firebaseObject, $ionicPopup, $location, $ionicModal, $ionicListDelegate, $state, $rootScope, $ionicUser, $ionicPush) {
 
     $scope.identifyUser = function() {
-        console.log('Ionic User: Identifying with Ionic User service');
         var auth = fb.getAuth();
-        console.log("********" , auth);
         var user = $ionicUser.get();
         if (!user.user_id) {
             // Set your user_id here, or generate a random one.
@@ -113,7 +111,6 @@ pithy.controller("QuotesController", function($scope, $firebaseObject, $ionicPop
 
         // Identify your user with the
         // Ionic User Service
-        console.log("********" , user);
 
         $ionicUser.identify(user).then(function() {
             $scope.identified = true;
@@ -121,8 +118,6 @@ pithy.controller("QuotesController", function($scope, $firebaseObject, $ionicPop
     };
 
     $scope.pushRegister = function() {
-        console.log('Ionic Push: Registering user');
-
         // Register with the Ionic Push service.  All parameters are optional.
         $ionicPush.register({
             canShowAlert: true, //Can pushes show an alert on your screen?
@@ -163,110 +158,111 @@ pithy.controller("QuotesController", function($scope, $firebaseObject, $ionicPop
         };
         $scope.identifyUser();
         $scope.pushRegister();
-};
 
-//init private vars
-var currentEditIndex = null;
+    };
 
-//auth check
-$scope.$on('$ionicView.beforeEnter', function(viewInfo, state) {
-    if (!fb.getAuth()) {
-        $location.path("/login");
-    }
-    initQuotes();
-    init();
+    //init private vars
+    var currentEditIndex = null;
 
-});
-
-$scope.createQuote = function(quote) {
-    if (quote && quote.quote != "") {
-        if ($scope.data.hasOwnProperty("quotes") !== true) {
-            $scope.data.quotes = [];
+    //auth check
+    $scope.$on('$ionicView.beforeEnter', function(viewInfo, state) {
+        if (!fb.getAuth()) {
+            $location.path("/login");
         }
-        $scope.data.quotes.push({
-            text: quote.text,
-            author: quote.author,
-            tags: $scope.tags
-        });
-        quote.text = "";
-        quote.author = "";
-        $scope.tags = [];
-    } else {
-        console.log("action not completed");
-    }
-    $scope.createModal.hide();
+        initQuotes();
+        init();
 
-};
+    });
 
-$scope.showCreateModal = function() {
-    $scope.tags = [];
-    $scope.createModal.show()
-};
-
-$scope.prepareForEdit = function(index) {
-    currentEditIndex = index;
-
-    $scope.editedQuote.text = $scope.data.quotes[index].text;
-    $scope.editedQuote.author = $scope.data.quotes[index].author;
-    $scope.tags = $scope.data.quotes[index].tags;
-
-    $scope.editModal.show();
-    $ionicListDelegate.closeOptionButtons();
-
-};
-
-$scope.editQuote = function(quote) {
-    if (currentEditIndex != null) {
-
-        $scope.data.quotes[currentEditIndex].text = quote.text;
-        $scope.data.quotes[currentEditIndex].author = quote.author;
-        $scope.data.quotes[currentEditIndex].tags = $scope.tags;
-        $scope.$apply();
-
-        $scope.editModal.hide();
-
-        $state.go($state.current, {}, {
-            reload: true
-        });
-    }
-};
-
-$scope.editSelected = function(index) {
-    if ($scope.tags.indexOf(index)) {
-        $scope.tags.splice(index, 1);
-    }
-};
-
-$scope.addTag = function(input) {
-    if (input.length > 0) {
-        if ($scope.tags == undefined) {
+    $scope.createQuote = function(quote) {
+        if (quote && quote.quote != "") {
+            if ($scope.data.hasOwnProperty("quotes") !== true) {
+                $scope.data.quotes = [];
+            }
+            $scope.data.quotes.push({
+                text: quote.text,
+                author: quote.author,
+                tags: $scope.tags
+            });
+            quote.text = "";
+            quote.author = "";
             $scope.tags = [];
+        } else {
+            console.log("action not completed");
         }
-        if ($scope.tags.indexOf(input) == -1) {
-            $scope.tags.push(input.toLowerCase());
+        $scope.createModal.hide();
+
+    };
+
+    $scope.showCreateModal = function() {
+        $scope.tags = [];
+        $scope.createModal.show()
+    };
+
+    $scope.prepareForEdit = function(index) {
+        currentEditIndex = index;
+
+        $scope.editedQuote.text = $scope.data.quotes[index].text;
+        $scope.editedQuote.author = $scope.data.quotes[index].author;
+        $scope.tags = $scope.data.quotes[index].tags;
+
+        $scope.editModal.show();
+        $ionicListDelegate.closeOptionButtons();
+
+    };
+
+    $scope.editQuote = function(quote) {
+        if (currentEditIndex != null) {
+
+            $scope.data.quotes[currentEditIndex].text = quote.text;
+            $scope.data.quotes[currentEditIndex].author = quote.author;
+            $scope.data.quotes[currentEditIndex].tags = $scope.tags;
+            $scope.$apply();
+
+            $scope.editModal.hide();
+
+            $state.go($state.current, {}, {
+                reload: true
+            });
         }
-    } else {
-        alert("You can't enter a blank category!");
-    }
-};
+    };
 
-$scope.logout = function() {
-    fb.unauth();
-    $location.path("/login")
-};
+    $scope.editSelected = function(index) {
+        if ($scope.tags.indexOf(index)) {
+            $scope.tags.splice(index, 1);
+        }
+    };
 
-//create and edit modals
-$ionicModal.fromTemplateUrl('templates/create.html', {
-    scope: $scope
-}).then(function(modal) {
-    $scope.createModal = modal;
-});
+    $scope.addTag = function(input) {
+        if (input.length > 0) {
+            if ($scope.tags == undefined) {
+                $scope.tags = [];
+            }
+            if ($scope.tags.indexOf(input) == -1) {
+                $scope.tags.push(input.toLowerCase());
+            }
+        } else {
+            alert("You can't enter a blank category!");
+        }
+    };
 
-$ionicModal.fromTemplateUrl('templates/edit.html', {
-    scope: $scope
-}).then(function(modal) {
-    $scope.editModal = modal;
-});
+    $scope.logout = function() {
+        fb.unauth();
+        $location.path("/login")
+    };
+
+    //create and edit modals
+    $ionicModal.fromTemplateUrl('templates/create.html', {
+        scope: $scope
+    }).then(function(modal) {
+        $scope.createModal = modal;
+    });
+
+    $ionicModal.fromTemplateUrl('templates/edit.html', {
+        scope: $scope
+    }).then(function(modal) {
+        $scope.editModal = modal;
+    });
 
 
 
