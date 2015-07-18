@@ -10,21 +10,17 @@
         </ion-nav-buttons>
         <ion-content>
             <ion-list show-delete="false" can-swipe="true">
-                <button class="button button-block button-dark" ng-click="identifyUser()">
-                    Identify a user
-                </button>
-                <button class="button button-block button-positive" ng-if="identified" ng-click="pushRegister()">
-                    Register for Push
-                </button>
                 <ion-item collection-repeat="quote in data.quotes" class="item-text-wrap">
                     <h1 class="quoteText">"{{quote.text}}"</h1>
                     <h2 class="quoteAuthor">-{{quote.author}}</h2>
+                    <h1>{{token}} {{identified}}</h1>
                     <button ng-repeat="tag in quote.tags" class="button button-small button-calm tagButton">
                         {{tag}}
                     </button>
                     <ion-option-button ng-click="data.quotes.splice($index, 1)" class="button-assertive icon ion-trash-a"></ion-option-button>
                     <ion-option-button ng-click="prepareForEdit($index)" class="button-positive">Edit</ion-option-button>
                 </ion-item>
+
             </ion-list>
         </ion-content>
     </ion-view>
