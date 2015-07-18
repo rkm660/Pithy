@@ -87,7 +87,7 @@ pithy.controller("LoginController", function($scope, $firebaseAuth, $location) {
                 alert(error);
             } else {
                 $scope.$apply(function() {
-                    $location.path('/quotes');
+                    alert("Successfully registered! Please log in.");
                 });
             }
         });
