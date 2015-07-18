@@ -13,7 +13,6 @@
                 <ion-item collection-repeat="quote in data.quotes" class="item-text-wrap">
                     <h1 class="quoteText">"{{quote.text}}"</h1>
                     <h2 class="quoteAuthor">-{{quote.author}}</h2>
-                    <h1>{{token}} {{identified}}</h1>
                     <button ng-repeat="tag in quote.tags" class="button button-small button-calm tagButton">
                         {{tag}}
                     </button>
