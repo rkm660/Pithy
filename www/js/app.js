@@ -99,23 +99,22 @@ pithy.controller("QuotesController", function($scope, $firebaseObject, $ionicPop
 
     $scope.identifyUser = function() {
         console.log('Ionic User: Identifying with Ionic User service');
-
+        var auth = fb.getAuth();
         var user = $ionicUser.get();
         if (!user.user_id) {
             // Set your user_id here, or generate a random one.
-            user.user_id = $ionicUser.generateGUID();
-        };
-
+            user.user_id = auth.uid;
+        }
         // Add some metadata to your user object.
         angular.extend(user, {
-            name: 'Ionitron',
-            bio: 'I come from planet Ion'
+            email: auth.password.email
         });
 
-        // Identify your user with the Ionic User Service
+        // Identify your user with the
+        // Ionic User Service
         $ionicUser.identify(user).then(function() {
             $scope.identified = true;
-            alert('Identified user ' + user.name + '\n ID ' + user.user_id);
+            alert('Identified user ' + user.email + '\n ID ' + user.user_id);
         });
     };
 
