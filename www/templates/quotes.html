@@ -50,7 +50,7 @@
                 </div>
                 <ion-list show-delete="false" can-swipe="false">
                     <ion-item collection-repeat="tag in tags">
-                        <ion-checkbox ng-checked="true" ng-model="true" ng-click="editSelected($index)">{{tag}}</ion-checkbox>
+                        <ion-checkbox ng-checked="tag" ng-model="tag" ng-click="editSelected($index)">{{tag}}</ion-checkbox>
                     </ion-item>
                 </ion-list>
                 <button class="button button-full button-positive" ng-click="createQuote(newQuote)">Create</button>
@@ -84,7 +84,7 @@
                     </div>
                     <ion-list show-delete="false" can-swipe="false">
                         <ion-item collection-repeat="tag in tags">
-                            <ion-checkbox ng-checked="true" ng-model="true" ng-click="editSelected($index)">{{tag}}</ion-checkbox>
+                            <ion-checkbox ng-checked="tag" ng-model="tag" ng-click="editSelected($index)">{{tag}}</ion-checkbox>
                         </ion-item>
                     </ion-list>
                 </div>

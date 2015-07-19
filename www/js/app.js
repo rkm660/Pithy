@@ -97,27 +97,22 @@ pithy.controller("LoginController", function($scope, $firebaseAuth, $location) {
 
 pithy.controller("QuotesController", function($scope, $firebaseObject, $ionicPopup, $location, $ionicModal, $ionicListDelegate, $state, $rootScope, $ionicUser, $ionicPush) {
 
-    $scope.identifyUser = function() {
+    var identifyUser = function() {
         var auth = fb.getAuth();
         var user = $ionicUser.get();
         if (!user.user_id) {
-            // Set your user_id here, or generate a random one.
             user.user_id = auth.uid;
         }
-        // Add some metadata to your user object.
         angular.extend(user, {
-            email: auth.password.email
+            uid: auth.uid
         });
-
-        // Identify your user with the
-        // Ionic User Service
 
         $ionicUser.identify(user).then(function() {
             $scope.identified = true;
         });
     };
 
-    $scope.pushRegister = function() {
+    var pushRegister = function() {
         // Register with the Ionic Push service.  All parameters are optional.
         $ionicPush.register({
             canShowAlert: true, //Can pushes show an alert on your screen?
@@ -156,8 +151,8 @@ pithy.controller("QuotesController", function($scope, $firebaseObject, $ionicPop
             author: "",
             tags: $scope.tags
         };
-        $scope.identifyUser();
-        $scope.pushRegister();
+        identifyUser();
+        pushRegister();
 
     };
 
