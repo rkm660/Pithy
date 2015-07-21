@@ -49,7 +49,7 @@
                     </div>
                 </div>
                 <ion-list show-delete="false" can-swipe="false">
-                    <ion-item collection-repeat="tag in tags">
+                        <ion-item item-height="100px" item-width="100%" collection-repeat="tag in tags">
                         <ion-checkbox ng-checked="tag" ng-model="tag" ng-click="editSelected($index)">{{tag}}</ion-checkbox>
                     </ion-item>
                 </ion-list>
@@ -83,7 +83,7 @@
                         </div>
                     </div>
                     <ion-list show-delete="false" can-swipe="false">
-                        <ion-item collection-repeat="tag in tags">
+                        <ion-item item-height="100px" item-width="100%" collection-repeat="tag in tags">
                             <ion-checkbox ng-checked="tag" ng-model="tag" ng-click="editSelected($index)">{{tag}}</ion-checkbox>
                         </ion-item>
                     </ion-list>

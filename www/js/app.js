@@ -170,13 +170,13 @@ pithy.controller("QuotesController", function($scope, $firebaseObject, $ionicPop
     });
 
     $scope.createQuote = function(quote) {
-        if (quote && quote.quote != "") {
+        if (quote && quote.text != "") {
             if ($scope.data.hasOwnProperty("quotes") !== true) {
                 $scope.data.quotes = [];
             }
             $scope.data.quotes.push({
                 text: quote.text,
-                author: quote.author,
+                author: (!quote.author || quote.author.length == 0) ? "Unknown" : quote.author,
                 tags: $scope.tags
             });
             quote.text = "";
@@ -212,7 +212,6 @@ pithy.controller("QuotesController", function($scope, $firebaseObject, $ionicPop
             $scope.data.quotes[currentEditIndex].text = quote.text;
             $scope.data.quotes[currentEditIndex].author = quote.author;
             $scope.data.quotes[currentEditIndex].tags = $scope.tags;
-            $scope.$apply();
 
             $scope.editModal.hide();
 
