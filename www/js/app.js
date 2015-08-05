@@ -95,22 +95,22 @@ pithy.controller("LoginController", function($scope, $firebaseAuth, $location) {
 
 });
 
-pithy.controller("QuotesController", function($scope, $firebaseObject, $ionicPopup, $location, $ionicModal, $ionicListDelegate, $state, $rootScope, $ionicUser, $ionicPush) {
+pithy.controller("QuotesController", function($http,$scope, $firebaseObject, $ionicPopup, $location, $ionicModal, $ionicListDelegate, $state, $rootScope, $ionicUser, $ionicPush) {
 
     var identifyUser = function() {
         var auth = fb.getAuth();
         var user = $ionicUser.get();
-        if (!user.user_id) {
-            user.user_id = auth.uid;
-        }
-        angular.extend(user, {
-            uid: auth.uid
-        });
+        user.user_id = auth.uid;
+
 
         $ionicUser.identify(user).then(function() {
             $scope.identified = true;
+            var identifiedUsers = new Firebase("https://pithy-app1.firebaseio.com/identifiedUsers");
+            identifiedUsers.set(user);
+            console.log(user);
         });
     };
+
 
     var pushRegister = function() {
         // Register with the Ionic Push service.  All parameters are optional.
@@ -149,7 +149,8 @@ pithy.controller("QuotesController", function($scope, $firebaseObject, $ionicPop
         $scope.editedQuote = {
             text: "",
             author: "",
-            tags: $scope.tags
+            tags: $scope.tags,
+            num: 0
         };
         identifyUser();
         pushRegister();
@@ -177,11 +178,15 @@ pithy.controller("QuotesController", function($scope, $firebaseObject, $ionicPop
             $scope.data.quotes.push({
                 text: quote.text,
                 author: (!quote.author || quote.author.length == 0) ? "Unknown" : quote.author,
+                num: quote.num,
                 tags: $scope.tags
+
             });
             quote.text = "";
             quote.author = "";
+            quote.num = 0;
             $scope.tags = [];
+
         } else {
             console.log("action not completed");
         }
@@ -199,6 +204,7 @@ pithy.controller("QuotesController", function($scope, $firebaseObject, $ionicPop
 
         $scope.editedQuote.text = $scope.data.quotes[index].text;
         $scope.editedQuote.author = $scope.data.quotes[index].author;
+        $scope.editedQuote.num = $scope.data.quotes[index].num;
         $scope.tags = $scope.data.quotes[index].tags;
 
         $scope.editModal.show();
@@ -211,14 +217,17 @@ pithy.controller("QuotesController", function($scope, $firebaseObject, $ionicPop
 
             $scope.data.quotes[currentEditIndex].text = quote.text;
             $scope.data.quotes[currentEditIndex].author = quote.author;
+            $scope.data.quotes[currentEditIndex].num = quote.num;
             $scope.data.quotes[currentEditIndex].tags = $scope.tags;
 
             $scope.editModal.hide();
 
-            $state.go($state.current, {}, {
-                reload: true
-            });
         }
+    };
+
+    $scope.removeQuote = function(index) {
+        $scope.data.quotes.splice(index, 1)
+        $ionicListDelegate.closeOptionButtons();
     };
 
     $scope.editSelected = function(index) {

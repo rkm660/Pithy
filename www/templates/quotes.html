@@ -16,10 +16,9 @@
                     <button ng-repeat="tag in quote.tags" class="button button-small button-calm tagButton">
                         {{tag}}
                     </button>
-                    <ion-option-button ng-click="data.quotes.splice($index, 1)" class="button-assertive icon ion-trash-a"></ion-option-button>
+                    <ion-option-button ng-click="removeQuote($index)" class="button-assertive icon ion-trash-a"></ion-option-button>
                     <ion-option-button ng-click="prepareForEdit($index)" class="button-positive">Edit</ion-option-button>
                 </ion-item>
-
             </ion-list>
         </ion-content>
     </ion-view>
@@ -38,6 +37,10 @@
                     <span class="input-label">Author</span>
                     <input ng-model="newQuote.author" type="text">
                 </label>
+                <label class="item item-input">
+                    <span class="input-label">Daily quote notis:</span>
+                    <input ng-model="newQuote.num" type="tel">
+                </label>
                 <div class="list">
                     <div class="item item-input-inset">
                         <label class="item-input-wrapper">
@@ -49,7 +52,7 @@
                     </div>
                 </div>
                 <ion-list show-delete="false" can-swipe="false">
-                        <ion-item item-height="100px" item-width="100%" collection-repeat="tag in tags">
+                    <ion-item item-height="100px" item-width="100%" collection-repeat="tag in tags">
                         <ion-checkbox ng-checked="tag" ng-model="tag" ng-click="editSelected($index)">{{tag}}</ion-checkbox>
                     </ion-item>
                 </ion-list>
@@ -71,6 +74,10 @@
                     <label class="item item-input">
                         <span class="input-label">Author</span>
                         <input ng-model="editedQuote.author" type="text">
+                    </label>
+                    <label class="item item-input">
+                        <span class="input-label">Daily quote notis:</span>
+                        <input ng-model="editedQuote.num" type="tel">
                     </label>
                     <div class="list">
                         <div class="item item-input-inset">
