@@ -105,9 +105,7 @@ pithy.controller("QuotesController", function($http,$scope, $firebaseObject, $io
 
         $ionicUser.identify(user).then(function() {
             $scope.identified = true;
-            var identifiedUsers = new Firebase("https://pithy-app1.firebaseio.com/identifiedUsers");
-            identifiedUsers.set(user);
-            console.log(user);
+            $scope.currentUser = user;
         });
     };
 
@@ -131,13 +129,19 @@ pithy.controller("QuotesController", function($http,$scope, $firebaseObject, $io
     $rootScope.$on('$cordovaPush:tokenReceived', function(event, data) {
         console.log('Ionic Push: Got token ', data.token, data.platform);
         $scope.token = data.token;
+        var identifiedUsers = new Firebase("https://pithy-app1.firebaseio.com/identifiedUsers");
+        var newUser = identifiedUsers.child($scope.token.toString());
+        var fbAuth = fb.getAuth();
+        newUser.set({
+            userID: fbAuth.uid
+        });
+
     });
 
     //initial refresh
     var initQuotes = function() {
         var fbAuth = fb.getAuth();
         if (fbAuth) {
-            console.log("fb auth: ", fbAuth);
             var object = $firebaseObject(fb.child("users/" + fbAuth.uid));
             object.$bindTo($scope, "data");
         }
