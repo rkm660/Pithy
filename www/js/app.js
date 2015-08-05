@@ -139,7 +139,7 @@ pithy.controller("QuotesController", function($http,$scope, $firebaseObject, $io
     });
 
     //initial refresh
-    var initQuotes = function() {
+    var refreshQuotes = function() {
         var fbAuth = fb.getAuth();
         if (fbAuth) {
             var object = $firebaseObject(fb.child("users/" + fbAuth.uid));
@@ -153,13 +153,25 @@ pithy.controller("QuotesController", function($http,$scope, $firebaseObject, $io
         $scope.editedQuote = {
             text: "",
             author: "",
-            tags: $scope.tags,
+            tags: [],
             num: 0
         };
         identifyUser();
         pushRegister();
 
     };
+
+    var getTimestamps = function(num){
+        var timestamps = [];
+        var now = Date.now()
+        var dailyMilli = 86400000;
+        var tomorrow = now + dailyMilli;
+        for (var i = 0; i < num; i++){
+            timestamps.push(now + (tomorrow - now / num) * i);
+        }
+        return timestamps;
+        
+    }
 
     //init private vars
     var currentEditIndex = null;
@@ -169,7 +181,7 @@ pithy.controller("QuotesController", function($http,$scope, $firebaseObject, $io
         if (!fb.getAuth()) {
             $location.path("/login");
         }
-        initQuotes();
+        refreshQuotes();
         init();
 
     });
@@ -183,7 +195,8 @@ pithy.controller("QuotesController", function($http,$scope, $firebaseObject, $io
                 text: quote.text,
                 author: (!quote.author || quote.author.length == 0) ? "Unknown" : quote.author,
                 num: quote.num,
-                tags: $scope.tags
+                tags: $scope.tags,
+                timestamps: getTimestamps(quote.num)
 
             });
             quote.text = "";
@@ -223,7 +236,7 @@ pithy.controller("QuotesController", function($http,$scope, $firebaseObject, $io
             $scope.data.quotes[currentEditIndex].author = quote.author;
             $scope.data.quotes[currentEditIndex].num = quote.num;
             $scope.data.quotes[currentEditIndex].tags = $scope.tags;
-
+            $scope.data.quotes[currentEditIndex].timestamps = getTimestamps(quote.num);
             $scope.editModal.hide();
 
         }
