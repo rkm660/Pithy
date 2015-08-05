@@ -163,11 +163,13 @@ pithy.controller("QuotesController", function($http,$scope, $firebaseObject, $io
 
     var getTimestamps = function(num){
         var timestamps = [];
-        var now = Date.now()
-        var dailyMilli = 86400000;
-        var tomorrow = now + dailyMilli;
-        for (var i = 0; i < num; i++){
-            timestamps.push(now + (tomorrow - now / num) * i);
+        if (num > 0){
+            var now = Date.now()
+            var dailyMilli = 86400000;
+            var tomorrow = now + dailyMilli;
+            for (var i = 0; i < num; i++){
+                timestamps.push(now + ((tomorrow - now) / num) * i);
+            }
         }
         return timestamps;
         
