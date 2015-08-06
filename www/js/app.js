@@ -168,7 +168,7 @@ pithy.controller("QuotesController", function($http,$scope, $firebaseObject, $io
             var dailyMilli = 86400000;
             var tomorrow = now + dailyMilli;
             for (var i = 0; i < num; i++){
-                timestamps.push(now + ((tomorrow - now) / num) * i);
+                timestamps.push(now + ((    tomorrow - now) / num) * i);
             }
         }
         return timestamps;
@@ -238,7 +238,9 @@ pithy.controller("QuotesController", function($http,$scope, $firebaseObject, $io
             $scope.data.quotes[currentEditIndex].author = quote.author;
             $scope.data.quotes[currentEditIndex].num = quote.num;
             $scope.data.quotes[currentEditIndex].tags = $scope.tags;
+            if ($scope.data.quotes[currentEditIndex].timestamps.length != quote.num){
             $scope.data.quotes[currentEditIndex].timestamps = getTimestamps(quote.num);
+            }
             $scope.editModal.hide();
 
         }
