@@ -44,10 +44,28 @@ pithy.config(function($stateProvider, $urlRouterProvider, $ionicAppProvider) {
             templateUrl: "templates/login.html",
             controller: "LoginController"
         })
-        .state("quotes", {
+        .state('tabs', {
+            url: "/tab",
+            abstract: true,
+            templateUrl: "templates/tabs.html"
+        })
+        .state('tabs.quotes', {
             url: "/quotes",
-            templateUrl: "templates/quotes.html",
-            controller: "QuotesController"
+            views: {
+                'quotes-tab': {
+                    templateUrl: "templates/quotes.html",
+                    controller: 'QuotesController'
+                }
+            }
+        })
+        .state('tabs.feed', {
+            url: "/feed",
+            views: {
+                'feed-tab': {
+                    templateUrl: "templates/feed.html",
+                    controller: 'FeedController'
+                }
+            }
         });
     $urlRouterProvider.otherwise('/login');
 
@@ -57,7 +75,7 @@ pithy.controller("LoginController", function($scope, $firebaseAuth, $location) {
 
     $scope.$on('$ionicView.beforeEnter', function(viewInfo, state) {
         if (fb.getAuth()) {
-            $location.path("/quotes");
+            $location.path("/tab/quotes");
         }
     });
 
@@ -71,7 +89,7 @@ pithy.controller("LoginController", function($scope, $firebaseAuth, $location) {
                 alert(error);
             } else {
                 $scope.$apply(function() {
-                    $location.path('/quotes');
+                    $location.path('/tab/quotes');
                 });
             }
         });
@@ -95,7 +113,7 @@ pithy.controller("LoginController", function($scope, $firebaseAuth, $location) {
 
 });
 
-pithy.controller("QuotesController", function($http,$scope, $firebaseObject, $ionicPopup, $location, $ionicModal, $ionicListDelegate, $state, $rootScope, $ionicUser, $ionicPush) {
+pithy.controller("QuotesController", function($http, $scope, $firebaseObject, $ionicPopup, $location, $ionicModal, $ionicListDelegate, $state, $rootScope, $ionicUser, $ionicPush) {
 
     var identifyUser = function() {
         var auth = fb.getAuth();
@@ -161,18 +179,18 @@ pithy.controller("QuotesController", function($http,$scope, $firebaseObject, $io
 
     };
 
-    var getTimestamps = function(num){
+    var getTimestamps = function(num) {
         var timestamps = [];
-        if (num > 0){
+        if (num > 0) {
             var now = Date.now()
             var dailyMilli = 86400000;
             var tomorrow = now + dailyMilli;
-            for (var i = 0; i < num; i++){
-                timestamps.push(now + ((    tomorrow - now) / num) * i);
+            for (var i = 0; i < num; i++) {
+                timestamps.push(now + ((tomorrow - now) / num) * i);
             }
         }
         return timestamps;
-        
+
     }
 
     //init private vars
@@ -180,7 +198,7 @@ pithy.controller("QuotesController", function($http,$scope, $firebaseObject, $io
 
     //auth check
     $scope.$on('$ionicView.beforeEnter', function(viewInfo, state) {
-        if (!fb.getAuth()) {
+        if (!fb || !fb.getAuth()) {
             $location.path("/login");
         }
         refreshQuotes();
@@ -238,8 +256,8 @@ pithy.controller("QuotesController", function($http,$scope, $firebaseObject, $io
             $scope.data.quotes[currentEditIndex].author = quote.author;
             $scope.data.quotes[currentEditIndex].num = quote.num;
             $scope.data.quotes[currentEditIndex].tags = $scope.tags;
-            if ($scope.data.quotes[currentEditIndex].timestamps.length != quote.num){
-            $scope.data.quotes[currentEditIndex].timestamps = getTimestamps(quote.num);
+            if ($scope.data.quotes[currentEditIndex].timestamps.length != quote.num) {
+                $scope.data.quotes[currentEditIndex].timestamps = getTimestamps(quote.num);
             }
             $scope.editModal.hide();
 
@@ -287,6 +305,20 @@ pithy.controller("QuotesController", function($http,$scope, $firebaseObject, $io
     }).then(function(modal) {
         $scope.editModal = modal;
     });
+});
+
+pithy.controller("FeedController", function($scope, $http) {
+
+    //initial refresh
+    var refreshFeed = function() {
+        $http.get("https://pithy-app1.firebaseio.com/feed/data.json")
+            .success(function(response) {
+                $scope.authors = Object.keys(response);
+                $scope.response = response;
+                console.log($scope.response);
+            });
+    };
+    refreshFeed();
 
 
 

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html ng-app="pithyApp">
 
 <head>
     <meta charset="utf-8">
@@ -25,11 +25,139 @@
     <script src="lib/ionic-service-push/ionic-push.js"></script>
 </head>
 
-<body ng-app="pithyApp">
+<body>
     <ion-pane>
         <ion-nav-bar class="bar-stable">
         </ion-nav-bar>
         <ion-nav-view></ion-nav-view>
+        <script id="templates/tabs.html" type="text/ng-template">
+            <ion-tabs class="tabs-icon-top tabs-positive">
+                <ion-tab title="Feed" icon="ion-ios-home" href="#/tab/feed">
+                    <ion-nav-view name="feed-tab"></ion-nav-view>
+                </ion-tab>
+                <ion-tab title="Quotes" icon="ion-ios-information" href="#/tab/quotes">
+                    <ion-nav-view name="quotes-tab"></ion-nav-view>
+                </ion-tab>
+            </ion-tabs>
+        </script>
+        <script id="templates/feed.html" type="text/ng-template">
+            <ion-view title="Public Feed">
+                <ion-nav-buttons side="left">
+                </ion-nav-buttons>
+                <ion-nav-buttons side="right">
+                </ion-nav-buttons>
+                <ion-content>
+                    <div ng-repeat="author in authors">
+                        <div ng-repeat="quote in response[author]" class="card">
+                            <div class="item item-text-wrap">
+                                {{quote}} - {{author}}
+                            </div>
+                        </div>
+                    </div>
+                </ion-content>
+            </ion-view>
+        </script>
+        <script id="templates/quotes.html" type="text/ng-template">
+            <ion-view title="My Quotes">
+                <ion-nav-buttons side="left">
+                    <button class="right button" ng-click="logout()">Logout</button>
+                </ion-nav-buttons>
+                <ion-nav-buttons side="right">
+                    <button class="right button button-icon icon ion-plus" ng-click="showCreateModal()"></button>
+                </ion-nav-buttons>
+                <ion-content>
+                    <ion-list show-delete="false" can-swipe="true">
+                        <ion-item collection-repeat="quote in data.quotes" class="item-text-wrap">
+                            <h1 class="quoteText">"{{quote.text}}"</h1>
+                            <h2 class="quoteAuthor">-{{quote.author}}</h2>
+                            <button ng-repeat="tag in quote.tags" class="button button-small button-calm tagButton">
+                                {{tag}}
+                            </button>
+                            <ion-option-button ng-click="removeQuote($index)" class="button-assertive icon ion-trash-a"></ion-option-button>
+                            <ion-option-button ng-click="prepareForEdit($index)" class="button-positive">Edit</ion-option-button>
+                        </ion-item>
+                    </ion-list>
+                </ion-content>
+            </ion-view>
+        </script>
+
+        <script id="templates/create.html" type="text/ng-template">
+            <ion-modal-view>
+                <ion-header-bar class="bar bar-header bar-positive">
+                    <h1 class="title">New Quote</h1>
+                    <button class="button button-clear button-primary" ng-click="createModal.hide()">Cancel</button>
+                </ion-header-bar>
+                <ion-content class="padding">
+                    <label class="item item-input">
+                        <span class="input-label">Quote</span>
+                        <input ng-model="newQuote.text" type="text">
+                    </label>
+                    <label class="item item-input">
+                        <span class="input-label">Author</span>
+                        <input ng-model="newQuote.author" type="text">
+                    </label>
+                    <label class="item item-input">
+                        <span class="input-label">Daily quote notis:</span>
+                        <input ng-model="newQuote.num" type="tel">
+                    </label>
+                    <div class="list">
+                        <div class="item item-input-inset">
+                            <label class="item-input-wrapper">
+                                <input type="text" placeholder="Tags" ng-model="tagInput">
+                            </label>
+                            <button ng-click="addTag(tagInput); tagInput = ''" class="button button-small">
+                                Add
+                            </button>
+                        </div>
+                    </div>
+                    <ion-list show-delete="false" can-swipe="false">
+                        <ion-item item-height="100px" item-width="100%" collection-repeat="tag in tags">
+                            <ion-checkbox ng-checked="tag" ng-model="tag" ng-click="editSelected($index)">{{tag}}</ion-checkbox>
+                        </ion-item>
+                    </ion-list>
+                    <button class="button button-full button-positive" ng-click="createQuote(newQuote)">Create</button>
+                </ion-content>
+            </ion-modal-view>
+        </script>
+        <script id="templates/edit.html" type="text/ng-template">
+            <ion-modal-view>
+                <ion-header-bar class="bar bar-header bar-positive">
+                    <h1 class="title">Edit Quote</h1>
+                </ion-header-bar>
+                <ion-content class="padding">
+                    <div class="list">
+                        <label class="item item-input">
+                            <span class="input-label">Quote</span>
+                            <input ng-model="editedQuote.text" type="text">
+                        </label>
+                        <label class="item item-input">
+                            <span class="input-label">Author</span>
+                            <input ng-model="editedQuote.author" type="text">
+                        </label>
+                        <label class="item item-input">
+                            <span class="input-label">Daily quote notis:</span>
+                            <input ng-model="editedQuote.num" type="tel">
+                        </label>
+                        <div class="list">
+                            <div class="item item-input-inset">
+                                <label class="item-input-wrapper">
+                                    <input type="text" placeholder="Tags" ng-model="tagInput">
+                                </label>
+                                <button ng-click="addTag(tagInput); tagInput = ''" class="button button-small">
+                                    Add
+                                </button>
+                            </div>
+                        </div>
+                        <ion-list show-delete="false" can-swipe="false">
+                            <ion-item item-height="100px" item-width="100%" collection-repeat="tag in tags">
+                                <ion-checkbox ng-checked="tag" ng-model="tag" ng-click="editSelected($index)">{{tag}}</ion-checkbox>
+                            </ion-item>
+                        </ion-list>
+                    </div>
+                    <button class="button button-full button-positive" ng-click="editQuote(editedQuote); window.location.reload(true)">Save</button>
+                </ion-content>
+            </ion-modal-view>
+        </script>
     </ion-pane>
 </body>
 
