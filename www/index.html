@@ -23,6 +23,10 @@
     <script src="lib/ngCordova/dist/ng-cordova.js"></script>
     <script src="lib/ionic-service-core/ionic-core.js"></script>
     <script src="lib/ionic-service-push/ionic-push.js"></script>
+    <script src="lib/ionic-contrib-tinder-cards/ionic.tdcards.js"></script>
+    <script src="lib/ionic-contrib-tinder-cards/ionic.tdcards.css"></script>
+    <script src="lib/collide/collide.js"></script>
+
 </head>
 
 <body>
@@ -47,13 +51,22 @@
                 <ion-nav-buttons side="right">
                 </ion-nav-buttons>
                 <ion-content>
-                    <div ng-repeat="author in authors">
+                    <!--<div ng-repeat="author in authors">
                         <div ng-repeat="quote in response[author]" class="card">
                             <div class="item item-text-wrap">
                                 {{quote}} - {{author}}
                             </div>
                         </div>
-                    </div>
+                    </div>-->
+                    <td-cards>
+        <td-card ng-repeat="card in cards" on-destroy="cardDestroyed($index)" on-swipe-left="cardSwipedLeft($index)" on-swipe-right="cardSwipedRight($index)" on-partial-swipe="cardPartialSwipe(amt)" class="card-{{$index}}">
+          <div class="image" ng-controller="FeedController">
+            <div class="no-text">NOPE</div>
+            <img ng-src="{{card.image}}">
+            <div class="yes-text">LIKE</div>
+          </div>
+        </td-card>
+      </td-cards>
                 </ion-content>
             </ion-view>
         </script>

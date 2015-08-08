@@ -5,7 +5,7 @@
 // the 2nd parameter is an array of 'requires'
 var pithy = angular.module('pithyApp', ['ionic', 'firebase', 'ngCordova',
     'ionic.service.core',
-    'ionic.service.push'
+    'ionic.service.push','ionic.contrib.ui.tinderCards'
 ]);
 var fb = null;
 
@@ -307,7 +307,8 @@ pithy.controller("QuotesController", function($http, $scope, $firebaseObject, $i
     });
 });
 
-pithy.controller("FeedController", function($scope, $http) {
+pithy.controller("FeedController", function($scope, $http, TDCardDelegate) {
+
 
     //initial refresh
     var refreshFeed = function() {
@@ -315,11 +316,52 @@ pithy.controller("FeedController", function($scope, $http) {
             .success(function(response) {
                 $scope.authors = Object.keys(response);
                 $scope.response = response;
-                console.log($scope.response);
+            }).then(function(res){
+                console.log(res);
+                $scope.currentQuote = $scope.getRandomQuote();
+                console.log($scope.currentQuote);
             });
     };
+
     refreshFeed();
 
+    $scope.getRandomQuote = function(){
+        var randomAuthorIndex = Math.floor((Math.random() * $scope.authors.length) + 1);
+        var randomAuthor = $scope.authors[randomAuthorIndex];
+        var randomQuoteIndex = Math.floor((Math.random() * $scope.response[randomAuthor].length) + 1);
+        var randomQuote = $scope.response[randomAuthor][randomQuoteIndex];
+        if (randomAuthor && randomQuote){
+            return [randomQuote,"- " + randomAuthor];
+        }
+        else{
+            return $scope.getRandomQuote();
+        }
+    };
+    var cardTypes = [{text:"asdf"},{},{}];
 
+    $scope.cards = Array.prototype.slice.call(cardTypes, 0);
+    console.log($scope.cards);
 
+    $scope.cardDestroyed = function(index) {
+        $scope.cards.splice(index, 1);
+    };
+
+    $scope.cardSwiped = function(index) {
+        var newCard = // new card data
+            $scope.cards.push(newCard);
+    };
+    $scope.cardSwipedLeft = function(index) {
+        console.log('LEFT SWIPE');
+        $scope.addCard();
+    };
+    $scope.cardSwipedRight = function(index) {
+        console.log('RIGHT SWIPE');
+        $scope.addCard();
+    };
+
+    $scope.addCard = function() {
+        var newCard = cardTypes[Math.floor(Math.random() * cardTypes.length)];
+        newCard.id = Math.random();
+        $scope.cards.push(angular.extend({}, newCard));
+    };
 });
