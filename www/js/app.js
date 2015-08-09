@@ -314,7 +314,7 @@ pithy.controller("FeedController", function($scope, $http, TDCardDelegate) {
 
     var cardTypes;
 
-    $scope.$on('$ionicView.beforeEnter', function(viewInfo, state) {
+    $scope.$on('$ionicView.loaded', function(viewInfo, state) {
         refreshFeed();
     });
 
@@ -336,12 +336,13 @@ pithy.controller("FeedController", function($scope, $http, TDCardDelegate) {
     };
 
     $scope.getRandomQuote = function(){
-        var randomAuthorIndex = Math.floor((Math.random() * $scope.authors.length) + 1);
+        var randomAuthorIndex = Math.floor((Math.random() * $scope.authors.length-1)) + 1;
         var randomAuthor = $scope.authors[randomAuthorIndex];
-        var randomQuoteIndex = Math.floor((Math.random() * $scope.response[randomAuthor].length) + 1);
+        console.log(randomAuthor,randomAuthorIndex,$scope.authors);
+        var randomQuoteIndex = Math.floor((Math.random() * $scope.response[randomAuthor].length-1)) + 1;
         var randomQuote = $scope.response[randomAuthor][randomQuoteIndex];
         if (randomAuthor && randomQuote){
-            return [randomQuote,"- " + randomAuthor];
+            return [randomQuote,randomAuthor];
         }
         else{
             return $scope.getRandomQuote();
@@ -352,8 +353,14 @@ pithy.controller("FeedController", function($scope, $http, TDCardDelegate) {
         $scope.cards.splice(index,1);
         $scope.cards = [];
         $scope.currentQuote = $scope.getRandomQuote();
-        console.log($scope.currentQuote);
         $scope.cards = [{quote :$scope.currentQuote}];
+    };
+
+    $scope.cardSwipedLeft = function(index){
+        console.log("left");
+    };
+    $scope.cardSwipedRight = function(index){
+        console.log("right");
     };
 
 

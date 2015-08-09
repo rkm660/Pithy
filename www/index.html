@@ -59,11 +59,12 @@
                         </div>
                     </div>-->
                     <td-cards>
-        <td-card ng-repeat="card in cards" on-destroy="cardDestroyed($index)" card-swiped="cardSwiped()"  class="card-{{$index}}">
+        <td-card ng-repeat="card in cards" on-destroy="cardDestroyed($index)" on-swipe-left="cardSwipedLeft($index)" on-swipe-right="cardSwipedRight($index)" class="card-{{$index}}">
           <div ng-controller="FeedController">
             <div class="no-text">NOPE</div>
             <div class="yes-text">LIKE</div>
-            <h2 class="text-center">{{currentQuote[0]}} {{currentQuote[1]}}</h2 >
+            <h3 class="text-center">{{currentQuote[0]}}</h3>
+            <h5 class="text-center">{{currentQuote[1]}}</h5>
           </div>
         </td-card>
       </td-cards>
