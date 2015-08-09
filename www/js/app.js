@@ -74,7 +74,7 @@ pithy.config(function($stateProvider, $urlRouterProvider, $ionicAppProvider) {
 pithy.controller("LoginController", function($scope, $firebaseAuth, $location) {
 
     $scope.$on('$ionicView.beforeEnter', function(viewInfo, state) {
-        if (fb.getAuth()) {
+        if (fb && fb.getAuth()) {
             $location.path("/tab/quotes");
         }
     });
@@ -201,8 +201,11 @@ pithy.controller("QuotesController", function($http, $scope, $firebaseObject, $i
         if (!fb || !fb.getAuth()) {
             $location.path("/login");
         }
-        refreshQuotes();
-        init();
+        else{
+            refreshQuotes();
+            init(); 
+        }
+        
 
     });
 
@@ -322,7 +325,6 @@ pithy.controller("FeedController", function($scope, $http, TDCardDelegate) {
                 $scope.authors = Object.keys(response);
                 $scope.response = response;
             }).then(function(res){
-                console.log("****");
                 $scope.currentQuote = $scope.getRandomQuote();
                 initCards();
             });
@@ -331,7 +333,6 @@ pithy.controller("FeedController", function($scope, $http, TDCardDelegate) {
     var initCards = function(){
         cardTypes = [{quote:$scope.currentQuote}];
         $scope.cards = Array.prototype.slice.call(cardTypes, 0);
-        console.log($scope.cards);
     };
 
     $scope.getRandomQuote = function(){
