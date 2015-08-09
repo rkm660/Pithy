@@ -44,7 +44,7 @@
                 </ion-tab>
             </ion-tabs>
         </script>
-        <script id="templates/feed.html" type="text/ng-template">
+        <script id="templates/feed.html" type="text/ng-template" ng-init="init()">
             <ion-view title="Public Feed">
                 <ion-nav-buttons side="left">
                 </ion-nav-buttons>
@@ -59,11 +59,11 @@
                         </div>
                     </div>-->
                     <td-cards>
-        <td-card ng-repeat="card in cards" on-destroy="cardDestroyed($index)" on-swipe-left="cardSwipedLeft($index)" on-swipe-right="cardSwipedRight($index)" on-partial-swipe="cardPartialSwipe(amt)" class="card-{{$index}}">
-          <div class="image" ng-controller="FeedController">
+        <td-card ng-repeat="card in cards" on-destroy="cardDestroyed($index)" card-swiped="cardSwiped()"  class="card-{{$index}}">
+          <div ng-controller="FeedController">
             <div class="no-text">NOPE</div>
-            <img ng-src="{{card.image}}">
             <div class="yes-text">LIKE</div>
+            <h2 class="text-center">{{currentQuote[0]}} {{currentQuote[1]}}</h2 >
           </div>
         </td-card>
       </td-cards>
