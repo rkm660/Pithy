@@ -310,13 +310,18 @@ pithy.controller("QuotesController", function($http, $scope, $firebaseObject, $i
     });
 });
 
-pithy.controller("FeedController", function($scope, $http, TDCardDelegate) {
+pithy.controller("FeedController", function($scope, $http, $location, TDCardDelegate) {
 
     var cardTypes;
 
     $scope.$on('$ionicView.loaded', function(viewInfo, state) {
         refreshFeed();
     });
+
+    $scope.logout = function() {
+        fb.unauth();
+        $location.path("/login")
+    };
 
     //initial refresh
     var refreshFeed = function() {
