@@ -113,8 +113,8 @@ pithy.controller("LoginController", function($scope, $firebaseAuth, $location) {
 
 });
 
-pithy.controller("QuotesController", function($http, $scope, $firebaseObject, $ionicPopup, $location, $ionicModal, $ionicListDelegate, $state, $rootScope, $ionicUser, $ionicPush) {
-
+pithy.controller("QuotesController", function($http, $scope, $rootScope, $firebaseObject, $ionicPopup, $location, $ionicModal, $ionicListDelegate, $state, $ionicUser, $ionicPush) {
+    
     var identifyUser = function() {
         var auth = fb.getAuth();
         var user = $ionicUser.get();
@@ -161,7 +161,7 @@ pithy.controller("QuotesController", function($http, $scope, $firebaseObject, $i
         var fbAuth = fb.getAuth();
         if (fbAuth) {
             var object = $firebaseObject(fb.child("users/" + fbAuth.uid));
-            object.$bindTo($scope, "data");
+            object.$bindTo($rootScope, "userData");
         }
     };
 
@@ -197,7 +197,8 @@ pithy.controller("QuotesController", function($http, $scope, $firebaseObject, $i
     var currentEditIndex = null;
 
     //auth check
-    $scope.$on('$ionicView.beforeEnter', function(viewInfo, state) {
+    $scope.$on('$ionicView.enter', function(viewInfo, state) {
+        console.log(fb);
         if (!fb || !fb.getAuth()) {
             $location.path("/login");
         }
@@ -211,10 +212,10 @@ pithy.controller("QuotesController", function($http, $scope, $firebaseObject, $i
 
     $scope.createQuote = function(quote) {
         if (quote && quote.text != "") {
-            if ($scope.data.hasOwnProperty("quotes") !== true) {
-                $scope.data.quotes = [];
+            if ($rootScope.userData.hasOwnProperty("quotes") !== true) {
+                $rootScope.userData.quotes = [];
             }
-            $scope.data.quotes.push({
+            $rootScope.userData.quotes.push({
                 text: quote.text,
                 author: (!quote.author || quote.author.length == 0) ? "Unknown" : quote.author,
                 num: quote.num,
@@ -242,10 +243,10 @@ pithy.controller("QuotesController", function($http, $scope, $firebaseObject, $i
     $scope.prepareForEdit = function(index) {
         currentEditIndex = index;
 
-        $scope.editedQuote.text = $scope.data.quotes[index].text;
-        $scope.editedQuote.author = $scope.data.quotes[index].author;
-        $scope.editedQuote.num = $scope.data.quotes[index].num;
-        $scope.tags = $scope.data.quotes[index].tags;
+        $scope.editedQuote.text = $rootScope.userData.quotes[index].text;
+        $scope.editedQuote.author = $rootScope.userData.quotes[index].author;
+        $scope.editedQuote.num = $rootScope.userData.quotes[index].num;
+        $scope.tags = $rootScope.userData.quotes[index].tags;
 
         $scope.editModal.show();
         $ionicListDelegate.closeOptionButtons();
@@ -255,12 +256,12 @@ pithy.controller("QuotesController", function($http, $scope, $firebaseObject, $i
     $scope.editQuote = function(quote) {
         if (currentEditIndex != null) {
 
-            $scope.data.quotes[currentEditIndex].text = quote.text;
-            $scope.data.quotes[currentEditIndex].author = quote.author;
-            $scope.data.quotes[currentEditIndex].num = quote.num;
-            $scope.data.quotes[currentEditIndex].tags = $scope.tags;
-            if ($scope.data.quotes[currentEditIndex].timestamps.length != quote.num) {
-                $scope.data.quotes[currentEditIndex].timestamps = getTimestamps(quote.num);
+            $rootScope.userData.quotes[currentEditIndex].text = quote.text;
+            $rootScope.userData.quotes[currentEditIndex].author = quote.author;
+            $rootScope.userData.quotes[currentEditIndex].num = quote.num;
+            $rootScope.userData.quotes[currentEditIndex].tags = $scope.tags;
+            if ($rootScope.userData.quotes[currentEditIndex].timestamps.length != quote.num) {
+                $rootScope.userData.quotes[currentEditIndex].timestamps = getTimestamps(quote.num);
             }
             $scope.editModal.hide();
 
@@ -268,7 +269,7 @@ pithy.controller("QuotesController", function($http, $scope, $firebaseObject, $i
     };
 
     $scope.removeQuote = function(index) {
-        $scope.data.quotes.splice(index, 1)
+        $rootScope.userData.quotes.splice(index, 1)
         $ionicListDelegate.closeOptionButtons();
     };
 
@@ -310,7 +311,7 @@ pithy.controller("QuotesController", function($http, $scope, $firebaseObject, $i
     });
 });
 
-pithy.controller("FeedController", function($scope, $http, $location, TDCardDelegate) {
+pithy.controller("FeedController", function($scope,$rootScope, $http, $location, TDCardDelegate) {
 
     var cardTypes;
 
@@ -343,7 +344,6 @@ pithy.controller("FeedController", function($scope, $http, $location, TDCardDele
     $scope.getRandomQuote = function(){
         var randomAuthorIndex = Math.floor((Math.random() * $scope.authors.length-1)) + 1;
         var randomAuthor = $scope.authors[randomAuthorIndex];
-        console.log(randomAuthor,randomAuthorIndex,$scope.authors);
         var randomQuoteIndex = Math.floor((Math.random() * $scope.response[randomAuthor].length-1)) + 1;
         var randomQuote = $scope.response[randomAuthor][randomQuoteIndex];
         if (randomAuthor && randomQuote){
@@ -361,11 +361,20 @@ pithy.controller("FeedController", function($scope, $http, $location, TDCardDele
         $scope.cards = [{quote :$scope.currentQuote}];
     };
 
+    $scope.addToQuotes = function(userID){
+        var quotesRef = new Firebase("https://pithy-app1.firebaseio.com/users/" + userID + "/quotes/");
+        console.log(quotesRef);
+    };
+
     $scope.cardSwipedLeft = function(index){
         console.log("left");
+        var id = fb.getAuth();
+        $scope.addToQuotes(id.uid);
     };
     $scope.cardSwipedRight = function(index){
         console.log("right");
+        var id = fb.getAuth();
+        $scope.addToQuotes(id.uid);
     };
 
 
