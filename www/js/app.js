@@ -66,6 +66,15 @@ pithy.config(function($stateProvider, $urlRouterProvider, $ionicAppProvider) {
                     controller: 'FeedController'
                 }
             }
+        })
+        .state('tabs.improve', {
+            url: "/improve",
+            views: {
+                'improve-tab': {
+                    templateUrl: "templates/improve.html",
+                    controller: 'ImproveController'
+                }
+            }
         });
     $urlRouterProvider.otherwise('/login');
 
@@ -385,6 +394,8 @@ pithy.controller("FeedController", function($scope,$rootScope, $http, $location,
         $scope.addToQuotes(id.uid);
     };
 
+});
 
-
+pithy.controller("ImproveController", function($scope,$rootScope) {
+    
 });
