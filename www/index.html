@@ -82,7 +82,7 @@
                 </ion-nav-buttons>
                 <ion-content>
                     <ion-list show-delete="false" can-swipe="true">
-                        <ion-item collection-repeat="quote in $root.userData.quotes" class="item-text-wrap">
+                        <ion-item item-height="150px" item-width="100%" collection-repeat="quote in $root.userData.quotes" class="item-text-wrap">
                             <h1 class="quoteText">"{{quote.text}}"</h1>
                             <h2 class="quoteAuthor">-{{quote.author}}</h2>
                             <button ng-repeat="tag in quote.tags" class="button button-small button-calm tagButton">

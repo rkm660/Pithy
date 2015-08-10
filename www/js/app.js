@@ -198,8 +198,7 @@ pithy.controller("QuotesController", function($http, $scope, $rootScope, $fireba
 
     //auth check
     $scope.$on('$ionicView.enter', function(viewInfo, state) {
-        console.log(fb);
-        if (!fb || !fb.getAuth()) {
+         if (!fb || !fb.getAuth()) {
             $location.path("/login");
         }
         else{
@@ -247,7 +246,6 @@ pithy.controller("QuotesController", function($http, $scope, $rootScope, $fireba
         $scope.editedQuote.author = $rootScope.userData.quotes[index].author;
         $scope.editedQuote.num = $rootScope.userData.quotes[index].num;
         $scope.tags = $rootScope.userData.quotes[index].tags;
-
         $scope.editModal.show();
         $ionicListDelegate.closeOptionButtons();
 
@@ -259,9 +257,15 @@ pithy.controller("QuotesController", function($http, $scope, $rootScope, $fireba
             $rootScope.userData.quotes[currentEditIndex].text = quote.text;
             $rootScope.userData.quotes[currentEditIndex].author = quote.author;
             $rootScope.userData.quotes[currentEditIndex].num = quote.num;
-            $rootScope.userData.quotes[currentEditIndex].tags = $scope.tags;
-            if ($rootScope.userData.quotes[currentEditIndex].timestamps.length != quote.num) {
-                $rootScope.userData.quotes[currentEditIndex].timestamps = getTimestamps(quote.num);
+            $rootScope.userData.quotes[currentEditIndex].tags = $scope.tags ? $scope.tags : [];
+            $rootScope.userData.quotes[currentEditIndex].timestamps = !$rootScope.userData.quotes[currentEditIndex].timestamps ? [] : $rootScope.userData.quotes[currentEditIndex].timestamps;
+            if ($rootScope.userData.quotes[currentEditIndex].timestamps.length != quote.num){
+                if (quote.num > 0){
+                    $rootScope.userData.quotes[currentEditIndex].timestamps = getTimestamps(quote.num);
+                }
+                else{
+                    $rootScope.userData.quotes[currentEditIndex].timestamps = [];                    
+                }
             }
             $scope.editModal.hide();
 
@@ -362,14 +366,18 @@ pithy.controller("FeedController", function($scope,$rootScope, $http, $location,
     };
 
     $scope.addToQuotes = function(userID){
-        var quotesRef = new Firebase("https://pithy-app1.firebaseio.com/users/" + userID + "/quotes/");
-        console.log(quotesRef);
+        console.log($scope.currentQuote);
+        $rootScope.userData.quotes.push({
+            text: $scope.currentQuote[0],
+            author: $scope.currentQuote[1],
+            num: 0,
+            tags: [],
+        });
     };
 
     $scope.cardSwipedLeft = function(index){
         console.log("left");
         var id = fb.getAuth();
-        $scope.addToQuotes(id.uid);
     };
     $scope.cardSwipedRight = function(index){
         console.log("right");
