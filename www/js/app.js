@@ -63,7 +63,7 @@ pithy.config(function($stateProvider, $urlRouterProvider, $ionicAppProvider) {
             views: {
                 'feed-tab': {
                     templateUrl: "templates/feed.html",
-                    controller: 'FeedController'
+                    controller: "FeedController"
                 }
             }
         })
@@ -72,7 +72,23 @@ pithy.config(function($stateProvider, $urlRouterProvider, $ionicAppProvider) {
             views: {
                 'improve-tab': {
                     templateUrl: "templates/improve.html",
-                    controller: 'ImproveController'
+                    abstract: true
+                }
+            }
+        })
+        .state('tabs.improve.mission', {
+            url: "/mission",
+            views: {
+                'mission-tab': {
+                    templateUrl: "templates/mission.html"
+                }
+            }
+        })
+        .state('tabs.improve.values', {
+            url: "/values",
+            views: {
+                'values-tab': {
+                    templateUrl: "templates/values.html"
                 }
             }
         });
@@ -386,7 +402,6 @@ pithy.controller("FeedController", function($scope,$rootScope, $http, $location,
 
     $scope.cardSwipedLeft = function(index){
         console.log("left");
-        var id = fb.getAuth();
     };
     $scope.cardSwipedRight = function(index){
         console.log("right");
@@ -397,5 +412,5 @@ pithy.controller("FeedController", function($scope,$rootScope, $http, $location,
 });
 
 pithy.controller("ImproveController", function($scope,$rootScope) {
-    
+
 });

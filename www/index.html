@@ -42,11 +42,12 @@
                 <ion-tab title="Quotes" icon="ion-ios-information" href="#/tab/quotes">
                     <ion-nav-view name="quotes-tab"></ion-nav-view>
                 </ion-tab>
-                <ion-tab title="Improve" icon="ion-checkmark-round" href="#/tab/improve">
+                <ion-tab title="Improve" icon="ion-ios-information" href="#/tab/improve">
                     <ion-nav-view name="improve-tab"></ion-nav-view>
                 </ion-tab>
             </ion-tabs>
         </script>
+
         <script id="templates/feed.html" type="text/ng-template">
             <ion-view title="Public Feed">
                 <ion-nav-buttons side="left">
@@ -75,19 +76,7 @@
                 </ion-content>
             </ion-view>
         </script>
-        <script id="templates/improve.html" type="text/ng-template">
-            <ion-view title="Self-Improvement">
-                <div class="tabs-striped tabs-top tabs-background-positive tabs-color-light">
-                    <div class="tabs">
-                        <a class="tab-item active" href="#">
-                            <p><strong>Values</strong></p>
-                        </a>
-                        <a class="tab-item" href="#">
-                            <p><strong>Goals</strong></p>
-                        </a>
-                </div>
-            </ion-view>
-        </script>
+
         <script id="templates/quotes.html" type="text/ng-template">
             <ion-view title="My Quotes">
                 <ion-nav-buttons side="left">
@@ -98,7 +87,7 @@
                 </ion-nav-buttons>
                 <ion-content>
                     <ion-list show-delete="false" can-swipe="true">
-                        <ion-item item-height="150px" item-width="100%" collection-repeat="quote in $root.userData.quotes" class="item-text-wrap">
+                        <ion-item item-height="200px" item-width="100%" collection-repeat="quote in $root.userData.quotes" class="item-text-wrap">
                             <h1 class="quoteText">"{{quote.text}}"</h1>
                             <h2 class="quoteAuthor">-{{quote.author}}</h2>
                             <button ng-repeat="tag in quote.tags" class="button button-small button-calm tagButton">
@@ -150,6 +139,8 @@
                 </ion-content>
             </ion-modal-view>
         </script>
+
+
         <script id="templates/edit.html" type="text/ng-template">
             <ion-modal-view>
                 <ion-header-bar class="bar bar-header bar-positive">
@@ -188,6 +179,34 @@
                     <button class="button button-full button-positive" ng-click="editQuote(editedQuote); window.location.reload(true)">Save</button>
                 </ion-content>
             </ion-modal-view>
+        </script>
+
+        <script id="templates/improve.html" type="text/ng-template">
+            <ion-tabs class="tabs-striped tabs-top tabs-background-positive tabs-color-light">
+
+             <ion-tab title="Mission" ui-sref="tabs.improve.mission">
+               <ion-nav-view name="mission-tab"></ion-nav-view>
+             </ion-tab>
+             <ion-tab title="Values" ui-sref="tabs.improve.values">
+               <ion-nav-view name="values-tab"></ion-nav-view>
+             </ion-tab>
+         </ion-tabs>
+        </script>
+
+        <script id="templates/mission.html" type="text/ng-template">
+            <ion-view title="Personal Mission">
+                <ion-content>
+                    test
+                </ion-content>
+            </ion-view>
+        </script>
+        <script id="templates/values.html" type="text/ng-template">
+            <ion-view title="Your Values">
+                
+                <ion-content>
+                    values
+                </ion-content>
+            </ion-view>
         </script>
     </ion-pane>
 </body>
